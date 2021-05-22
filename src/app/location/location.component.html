@@ -1,0 +1,7 @@
+<mat-card *ngIf="currentLocation">
+
+    <mat-list>
+        <mat-list-item *ngFor="let current of currentLocation"> {{current.latitude}}, {{current.longitude}} </mat-list-item>
+    </mat-list>
+    
+</mat-card>
