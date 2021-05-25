@@ -1,9 +1,15 @@
 
 
-<mat-toolbar color="primary">
-  <span>Geolocation Test</span>
-</mat-toolbar>
-<app-map></app-map>
+<mat-toolbar  color="primary">
+  <span class="col-4"><ng-container *ngIf="!isMobile" >TO Cameras</ng-container></span>
+  <span class="col-8 d-flex justify-content-end">
+    <mat-slide-toggle *ngIf="isMobile"  (change)="wakeLock($event)" >Stay Awake</mat-slide-toggle>
 
-<app-location></app-location>
+  </span>
+
+</mat-toolbar>
+
+
+<app-location>
+</app-location>
 <router-outlet></router-outlet>

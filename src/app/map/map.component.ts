@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
+import { LocationService} from '../services/location.service'
 
 declare var ol: any;
 
@@ -10,11 +11,25 @@ declare var ol: any;
 })
 export class MapComponent implements OnInit {
   map: any;
+  currentLocation: any;
+  loading = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private locationService: LocationService) {}
 
   ngOnInit(): void {
+    this.loading = true;
+    this.getLocation()
     this.initMap();
+
+  }
+
+  getLocation() {
+    this.locationService.currentPosition().subscribe((l: any) => {
+      this.currentLocation = [l.longitude, l.latitude];
+      this.apiService.testLog([l.latitude, l.longitude]).subscribe();
+      this.setCenter([l.longitude, l.latitude])
+    });
+
   }
 
   initMap() {
@@ -25,14 +40,12 @@ export class MapComponent implements OnInit {
           source: new ol.source.OSM()
         })
       ],
-      view: new ol.View({
-        center: ol.proj.fromLonLat([-79.3299795, 43.7736825]),
-        zoom: 10
-      })
+      // view: new ol.View({
+      //   center: ol.proj.fromLonLat(this.currentLocation),
+      //   zoom: 16
+      // })
     });
-    this.locationMarker();
-    this.icon();
-
+    // this.icon();
     // test
     this.apiService.getSpeed().subscribe((speed) => this.cameraMarkers(speed));
     this.apiService.getRedlight().subscribe((rl) => this.cameraMarkers(rl));
@@ -43,12 +56,20 @@ export class MapComponent implements OnInit {
       source: new ol.source.Vector({
         features: [
           new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([-79.3299795, 43.7736825]))
+            geometry: new ol.geom.Point(ol.proj.fromLonLat(this.currentLocation))
           })
         ]
       })
     });
     this.map.addLayer(layer);
+  }
+
+  setCenter(center: Array<any>) {
+    var view = this.map.getView();
+    view.setCenter(ol.proj.fromLonLat(center));
+    view.setZoom(16);
+    this.locationMarker();
+    this.loading = false;
   }
 
   cameraMarkers(coordinates: any) {
@@ -66,7 +87,7 @@ export class MapComponent implements OnInit {
 
   icon() {
     var iconFeature = new ol.Feature({
-      geometry: new ol.geom.Point([-79.3299795, 43.7736825]),
+      geometry: new ol.geom.Point(this.currentLocation),
       name: 'Null Island',
       population: 4000,
       rainfall: 500

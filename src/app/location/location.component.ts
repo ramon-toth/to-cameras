@@ -14,11 +14,14 @@ export class LocationComponent implements OnInit {
 
   ngOnInit(): void {
     this.locationService.currentPosition().subscribe((l: any) => {
-      console.log(l);
-      this.currentLocation.push(l);
+      this.currentLocation = l;
       this.apiService.testLog([l.latitude, l.longitude]).subscribe();
     });
 
-    this.apiService.getSpeed().subscribe((speed) => console.log(speed));
+    // this.apiService.getSpeed().subscribe((speed) => console.log(speed));
+  }
+
+  geometry(coord: any) {
+    return [coord.longitude, coord.latitude]
   }
 }

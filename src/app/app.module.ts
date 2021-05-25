@@ -9,10 +9,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LocationComponent } from './location/location.component';
 import { MapComponent } from './map/map.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [AppComponent, LocationComponent, MapComponent],
-  imports: [BrowserModule, HttpClientModule, MatToolbarModule, MatListModule, MatCardModule, AppRoutingModule, BrowserAnimationsModule],
+  imports: [BrowserModule, MatProgressBarModule, MatSlideToggleModule, HttpClientModule, MatToolbarModule, MatListModule, MatCardModule, AppRoutingModule, BrowserAnimationsModule],
   providers: [],
   bootstrap: [AppComponent]
 })
